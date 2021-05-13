@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+require_relative './config'
+require_relative './scheduler'
+
+task :default do
+  # Clear queue of previous messages
+  TelegramHelper.clear_update_queue
+
+  active_threepio = Threepio.new
+  active_threepio.listen
+end
+
+# task :scheduler do
+
+# end
+
+task :clear do
+  TelegramHelper.clear_update_queue
+end
+
+task :weather do
+  TelegramWeather.send_weather_message
+end
+
+task :nba do
+  NBAGames.send_games_message
+end
+
+task :release do
+  TrelloBot.make_release
+end
+
+task :get_lists do
+  Trello::Board.find(TRELLO_BOARD_ID).lists.each { |list| puts [list.name, list.id] }
+end
+
+# task :test do
+#   TelegramHelper.send_message(CGI.escapeHTML('<< .<>, <b>hi</b>'))
+# end
+
+task :format do
+  `bundle exec rbprettier --write '**/*'`
+end
